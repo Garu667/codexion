@@ -13,13 +13,17 @@ long	get_time_ms(void)
 	return (tv.tv_sec * 1000L + tv.tv_usec / 1000);
 }
 
-void	ft_msleep(long ms)
+void	ft_msleep(long ms, t_sim *sim)
 {
 	long	start;
 
 	start = get_time_ms();
 	while (get_time_ms() - start < ms)
+	{
 		usleep(100);
+		if (sim_should_stop(sim))
+			return ;
+	}
 }
 
 int	sim_should_stop(t_sim *sim)

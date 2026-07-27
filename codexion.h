@@ -61,7 +61,7 @@ typedef struct s_sim
 	int				stop;
 	pthread_mutex_t	stop_mutex;
 	pthread_mutex_t	log_mutex;
-	thread_t		monitor;
+	pthread_t		monitor;
 	pthread_mutex_t	coders_mutex;
 }	t_sim;
 
@@ -70,7 +70,7 @@ void		swap(t_waiter **a, t_waiter **b);
 int			parsing(char **av, t_sim *sim);
 /*		utils.c		*/
 long		get_time_ms(void);
-void		ft_msleep(long ms);
+void		ft_msleep(long ms, t_sim *sim);
 long		get_elapsed_ms(t_sim *sim);
 int			all_coders_done(t_sim *sim);
 int			sim_should_stop(t_sim *sim);
@@ -87,5 +87,6 @@ void		release_dongle(t_coder *coder, t_dongle *dongle);
 /*		coders.c		*/
 void		log_action(t_sim *sim, int coder_id, char *action);
 void		*coder_routine(void *arg);
+void		cleanup_sim(t_sim *sim, int i);
 
 #endif

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dongle.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/27 17:03:45 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/07/27 17:03:45 by ramaroud         ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 void	wake_all_waiters(t_sim *sim)
@@ -45,7 +57,7 @@ void	acquire_dongle(t_coder *coder, t_dongle *dongle)
 	pthread_mutex_unlock(&dongle->mutex);
 	remaining = coder->sim->dongle_cd - (get_time_ms() - dongle->released_at);
 	if (remaining > 0)
-		ft_msleep(remaining);
+		ft_msleep(remaining, coder->sim);
 }
 
 void	release_dongle(t_coder *coder, t_dongle *dongle)

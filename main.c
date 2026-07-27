@@ -12,12 +12,17 @@
 
 #include "codexion.h"
 
-static void	cleanup_sim(t_sim *sim)
+void	cleanup_sim(t_sim *sim, int i)
 {
-	int	i;
+	int	j;
 
-	i = 0;
-	while (i < sim->n_coders)
+	j = sim->n_coders;
+	if (i != 0)
+	{
+		j = i;
+		i = 0;
+	}
+	while (i < j)
 	{
 		free(sim->dongles[i].queue);
 		pthread_mutex_destroy(&sim->dongles[i].mutex);
@@ -56,5 +61,5 @@ int	main(int ac, char **av)
 		pthread_join(sim.coders[i].thread, NULL);
 		i++;
 	}
-	cleanup_sim(&sim);
+	cleanup_sim(&sim, 0);
 }

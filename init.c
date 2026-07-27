@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/27 16:06:15 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/07/27 16:06:15 by ramaroud         ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 static void	stop_simulation(t_sim *sim)
@@ -19,7 +31,7 @@ void	*monitor_routine(void *arg)
 	while (!sim_should_stop(sim))
 	{
 		i = -1;
-		ft_msleep(1);
+		usleep(100);
 		while (++i < sim->n_coders)
 		{
 			pthread_mutex_lock(&sim->coders_mutex);
@@ -100,8 +112,9 @@ int	init_sim(t_sim *sim)
 	pthread_create(&sim->monitor, NULL, monitor_routine, sim);
 	while (i < sim->n_coders)
 	{
-		pthread_create(
-			&sim->coders[i].thread, NULL, coder_routine, &sim->coders[i]);
+		if (pthread_create(
+				&sim->coders[i].thread, NULL, coder_routine, &sim->coders[i]) != 0)
+			cleanup_sim(sim, i);
 		i++;
 	}
 	pthread_join(sim->monitor, NULL);

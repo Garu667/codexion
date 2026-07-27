@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   coders.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ramaroud <ramaroud@student.42lyon.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/27 15:01:49 by ramaroud          #+#    #+#             */
+/*   Updated: 2026/07/27 15:01:49 by ramaroud         ###   ########lyon.fr   */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 void	log_action(t_sim *sim, int coder_id, char *action)
@@ -13,7 +25,7 @@ static void	coder_compile(t_sim *sim, t_coder *coder)
 	coder->last_compile = get_time_ms();
 	pthread_mutex_unlock(&sim->coders_mutex);
 	log_action(sim, coder->id, "is compiling");
-	ft_msleep(sim->time_compile);
+	ft_msleep(sim->time_compile, sim);
 	pthread_mutex_lock(&sim->coders_mutex);
 	coder->compile_count++;
 	pthread_mutex_unlock(&sim->coders_mutex);
@@ -40,11 +52,11 @@ static void	coder_life(
 	release_dongle(coder, first);
 	release_dongle(coder, second);
 	log_action(sim, coder->id, "is debugging");
-	ft_msleep(sim->time_debug);
+	ft_msleep(sim->time_debug, sim);
 	if (sim_should_stop(sim))
 		return ;
 	log_action(sim, coder->id, "is refactoring");
-	ft_msleep(sim->time_refactor);
+	ft_msleep(sim->time_refactor, sim);
 }
 
 void	*coder_routine(void *arg)
