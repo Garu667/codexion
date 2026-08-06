@@ -32,14 +32,7 @@ arbitration.
 
 ### Compilation
 
-```sh
-git clone <this-repo-url>
-cd codexion
-make
-```
-
-This produces the `codexion` executable at the root of the project. The
-Makefile also provides `clean`, `fclean`, and `re`.
+The Makefile provides `clean`, `fclean`, and `re` rules.
 
 ### Usage
 
@@ -60,13 +53,22 @@ Makefile also provides `clean`, `fclean`, and `re`.
 | `scheduler`                   | `fifo` or `edf` — arbitration policy when several coders want a dongle  |
 
 All arguments are mandatory and must be strictly positive integers (except
-`scheduler`, which must be exactly `fifo` or `edf`). Invalid input is
-rejected with an error message and a non-zero exit code.
+`scheduler`, which must be exactly `fifo` or `edf`).
 
 Example:
-
 ```sh
-./codexion 5 800 100 100 100 5 100 edf
+# Scheduler in Maj
+./codexion 3 500 100 100 100 3 50 FIFO
+# Huge number
+./codexion 3 999999999999999999999 100 100 100 3 50 fifo
+# Zero Coders
+./codexion 0 500 100 100 100 3 50 fifo
+# One coder
+./codexion 1 500 100 100 100 3 50 fifo
+# dongle_cd > time_burnout
+./codexion 3 200 50 50 50 3 300 fifo
+# Stress EDF
+./codexion 8 600 20 20 20 8 20 edf
 ```
 
 ### Reading the output
@@ -181,14 +183,10 @@ Every state change is logged as `timestamp_in_ms coder_id action`:
 
 ## Resources
 
-- Dijkstra, E. W. — *Hierarchical ordering of sequential processes* (origin
-  of the Dining Philosophers problem)
-- Liu, C. L. & Layland, J. W. (1973) — *Scheduling Algorithms for
-  Multiprogramming in a Hard-Real-Time Environment* (Earliest Deadline First)
-- `man 3 pthread_mutex_lock`, `man 3 pthread_cond_wait`,
-  `man 3 pthread_cond_timedwait`
-- POSIX Threads Programming — Lawrence Livermore National Laboratory
-  tutorial (`hpc-tutorials.llnl.gov/posix`)
+- [Codexion Visualizer](https://github.com/0xS4cha/codexion_visualizer) made by [sservant](https://github.com/0xS4cha)
+- Medium Forum, [this post](https://medium.com/@akshatarhabib/understanding-threads-in-c-c9feb5e9372a) particularly
+- `man 3 pthread_mutex_lock`, `man 3 pthread_cond_wait`, `man 3 pthread_cond_timedwait`
+- Youtube video, they are too far in my historic i couldn't link them
 
 ### AI usage disclosure
 
