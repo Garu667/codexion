@@ -6,10 +6,10 @@ OBJDIR			= objs
 
 MANDATORY_SRCS	= parsing.c	\
 				  coders.c	\
+				  dongle.c	\
 				  utils.c	\
 				  heap.c	\
 				  init.c	\
-				  dongle.c	\
 				  main.c
 
 MANDATORY_OBJS	= $(MANDATORY_SRCS:%.c=$(OBJDIR)/%.o)
