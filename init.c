@@ -95,7 +95,7 @@ int	init_sim(t_sim *sim)
 {
 	int	i;
 
-	i = 0;
+	i = -1;
 	sim->coders = malloc(sim->n_coders * sizeof(t_coder));
 	if (!sim->coders)
 		return (3);
@@ -110,12 +110,11 @@ int	init_sim(t_sim *sim)
 	pthread_mutex_init(&sim->coders_mutex, NULL);
 	sim->sim_start = get_time_ms();
 	pthread_create(&sim->monitor, NULL, monitor_routine, sim);
-	while (i < sim->n_coders)
+	while (++i < sim->n_coders)
 	{
-		if (pthread_create(
-				&sim->coders[i].thread, NULL, coder_routine, &sim->coders[i]) != 0)
+		if (pthread_create(&sim->coders[i].thread, NULL,
+				coder_routine, &sim->coders[i]) != 0)
 			cleanup_sim(sim, i);
-		i++;
 	}
 	pthread_join(sim->monitor, NULL);
 	return (0);
