@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "codexion.h"
+#include <limits.h>
 
 static int	invalid_number(const char *str)
 {
@@ -39,6 +40,8 @@ static long	parse_positive_long(const char *str)
 	i = 0;
 	while (str[i])
 	{
+		if (result > (LONG_MAX - (str[i] - '0')) / 10)
+			return (-1);
 		result = result * 10 + (str[i] - '0');
 		i++;
 	}
