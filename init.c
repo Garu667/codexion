@@ -16,8 +16,8 @@ static void	stop_simulation(t_sim *sim)
 {
 	pthread_mutex_lock(&sim->stop_mutex);
 	sim->stop = 1;
-	wake_all_waiters(sim);
 	pthread_mutex_unlock(&sim->stop_mutex);
+	wake_all_waiters(sim);
 }
 
 void	*monitor_routine(void *arg)
@@ -114,7 +114,7 @@ int	init_sim(t_sim *sim)
 	{
 		if (pthread_create(&sim->coders[i].thread, NULL,
 				coder_routine, &sim->coders[i]) != 0)
-			cleanup_sim(sim, i);
+			return (cleanup_sim(sim, i), -9);
 	}
 	pthread_join(sim->monitor, NULL);
 	return (0);
