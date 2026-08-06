@@ -1,19 +1,17 @@
 NAME			= codexion
-
 CC				= cc
 CFLAGS			= -Wall -Werror -Wextra -pthread -MMD -MP
 OBJDIR			= objs
 
-MANDATORY_SRCS	= parsing.c	\
-				  coders.c	\
-				  dongle.c	\
-				  utils.c	\
-				  heap.c	\
-				  init.c	\
-				  main.c
+MANDATORY_SRCS	= src/parsing.c	\
+				  src/coders.c	\
+				  src/dongle.c	\
+				  src/utils.c	\
+				  src/heap.c	\
+				  src/init.c	\
+				  src/main.c
 
 MANDATORY_OBJS	= $(MANDATORY_SRCS:%.c=$(OBJDIR)/%.o)
-
 DEPFILES		= $(MANDATORY_OBJS:.o=.d)
 
 all: $(NAME)
