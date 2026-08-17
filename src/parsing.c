@@ -29,7 +29,7 @@ static int	invalid_number(const char *str)
 	return (0);
 }
 
-static long	parse_positive_long(const char *str)
+static long	parse_positive_long(const char *str, int flag)
 {
 	long	result;
 	int		i;
@@ -45,7 +45,9 @@ static long	parse_positive_long(const char *str)
 		result = result * 10 + (str[i] - '0');
 		i++;
 	}
-	if (result <= 0)
+	if (result < 0)
+		return (-1);
+	if (flag == 1 && result == 0)
 		return (-1);
 	return (result);
 }
@@ -70,13 +72,13 @@ void	swap(t_waiter **a, t_waiter **b)
 
 int	parsing(char **av, t_sim *sim)
 {
-	sim->n_coders = (int)parse_positive_long(av[1]);
-	sim->time_burnout = parse_positive_long(av[2]);
-	sim->time_compile = parse_positive_long(av[3]);
-	sim->time_debug = parse_positive_long(av[4]);
-	sim->time_refactor = parse_positive_long(av[5]);
-	sim->n_req_compiles = (int)parse_positive_long(av[6]);
-	sim->dongle_cd = parse_positive_long(av[7]);
+	sim->n_coders = (int)parse_positive_long(av[1], 1);
+	sim->time_burnout = parse_positive_long(av[2], 1);
+	sim->time_compile = parse_positive_long(av[3], 1);
+	sim->time_debug = parse_positive_long(av[4], 1);
+	sim->time_refactor = parse_positive_long(av[5], 1);
+	sim->n_req_compiles = (int)parse_positive_long(av[6], 1);
+	sim->dongle_cd = parse_positive_long(av[7], 0);
 	if (sim->n_coders < 0 || sim->time_burnout < 0
 		|| sim->time_compile < 0 || sim->time_debug < 0
 		|| sim->time_refactor < 0 || sim->n_req_compiles < 0
