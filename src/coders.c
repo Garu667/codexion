@@ -15,7 +15,8 @@
 void	log_action(t_sim *sim, int coder_id, char *action)
 {
 	pthread_mutex_lock(&sim->log_mutex);
-	printf("%ld %d %s\n", get_elapsed_ms(sim), coder_id, action);
+	if (!sim_should_stop(sim))
+		printf("%ld %d %s\n", get_elapsed_ms(sim), coder_id, action);
 	pthread_mutex_unlock(&sim->log_mutex);
 }
 
