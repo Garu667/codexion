@@ -40,6 +40,7 @@ static int	dongle_ready(t_dongle *dongle, t_waiter *waiter, long dongle_cd)
 		return (0);
 	return (heap_peek(dongle) == waiter);
 }
+
 void	acquire_dongle(t_coder *coder, t_dongle *dongle)
 {
 	t_waiter	waiter;
