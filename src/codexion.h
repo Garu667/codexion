@@ -30,8 +30,6 @@ typedef struct s_waiter
 	int				coder_id;
 	long			arrived_at;
 	long			deadline;
-	pthread_cond_t	ready;
-	int				granted;
 }	t_waiter;
 
 typedef struct s_dongle
@@ -94,9 +92,8 @@ void		heap_push(t_dongle *dongle, t_waiter *waiter, int scheduler);
 void		*monitor_routine(void *arg);
 int			init_sim(t_sim *sim);
 /*		dongle.c		*/
-void		wake_all_waiters(t_sim *sim);
 void		acquire_dongle(t_coder *coder, t_dongle *dongle);
-void		release_dongle(t_coder *coder, t_dongle *dongle);
+void		release_dongle(t_dongle *dongle);
 /*		coders.c		*/
 void		log_action(t_sim *sim, int coder_id, char *action);
 void		*coder_routine(void *arg);

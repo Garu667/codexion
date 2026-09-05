@@ -24,8 +24,8 @@ static void	coder_compile(t_sim *sim, t_coder *coder)
 {
 	pthread_mutex_lock(&sim->coders_mutex);
 	coder->last_compile = get_time_ms();
-	pthread_mutex_unlock(&sim->coders_mutex);
 	log_action(sim, coder->id, "is compiling");
+	pthread_mutex_unlock(&sim->coders_mutex);
 	ft_msleep(sim->time_compile, sim);
 	pthread_mutex_lock(&sim->coders_mutex);
 	coder->compile_count++;
@@ -39,8 +39,6 @@ static void	coder_life(
 			t_dongle *second
 		)
 {
-	if (coder->compile_count == sim->n_req_compiles)
-		return ;
 	acquire_dongle(coder, first);
 	if (sim_should_stop(sim))
 		return ;
@@ -52,8 +50,8 @@ static void	coder_life(
 	coder_compile(sim, coder);
 	if (sim_should_stop(sim))
 		return ;
-	release_dongle(coder, first);
-	release_dongle(coder, second);
+	release_dongle(first);
+	release_dongle(second);
 	log_action(sim, coder->id, "is debugging");
 	ft_msleep(sim->time_debug, sim);
 	if (sim_should_stop(sim))
@@ -73,6 +71,8 @@ void	*coder_routine(void *arg)
 	sim = coder->sim;
 	while (!sim_should_stop(sim))
 	{
+		if (coder->compile_count == sim->n_req_compiles)
+			return (NULL);
 		if (coder->left->id < coder->right->id)
 		{
 			first = coder->left;

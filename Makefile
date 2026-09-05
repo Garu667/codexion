@@ -1,6 +1,6 @@
 NAME			= codexion
 CC				= cc
-CFLAGS			= -Wall -Werror -Wextra -pthread -MMD -MP
+CFLAGS			= -Wall -Werror -Wextra -pthread -MMD -MP -g
 OBJDIR			= objs
 
 MANDATORY_SRCS	= src/parsing.c	\

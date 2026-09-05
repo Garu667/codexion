@@ -17,7 +17,6 @@ static void	stop_simulation(t_sim *sim)
 	pthread_mutex_lock(&sim->stop_mutex);
 	sim->stop = 1;
 	pthread_mutex_unlock(&sim->stop_mutex);
-	wake_all_waiters(sim);
 }
 
 void	*monitor_routine(void *arg)
