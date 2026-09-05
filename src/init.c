@@ -23,9 +23,9 @@ void	*monitor_routine(void *arg)
 {
 	t_sim	*sim;
 	long	time;
+	int		done;
 	int		i;
 
-	time = 0;
 	sim = (t_sim *)arg;
 	while (!sim_should_stop(sim))
 	{
@@ -33,10 +33,8 @@ void	*monitor_routine(void *arg)
 		usleep(100);
 		while (++i < sim->n_coders)
 		{
-			pthread_mutex_lock(&sim->coders_mutex);
-			time = get_time_ms() - sim->coders[i].last_compile;
-			pthread_mutex_unlock(&sim->coders_mutex);
-			if (time > sim->time_burnout)
+			time = coder_status(sim, i, &done);
+			if (!done && time > sim->time_burnout)
 			{
 				log_action(sim, sim->coders[i].id, "burned out");
 				return (stop_simulation(sim), NULL);

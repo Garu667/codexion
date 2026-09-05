@@ -97,6 +97,8 @@ void		release_dongle(t_dongle *dongle);
 /*		coders.c		*/
 void		log_action(t_sim *sim, int coder_id, char *action);
 void		*coder_routine(void *arg);
+long		coder_status(t_sim *sim, int i, int *done);
+/*		main.c		*/
 void		cleanup_sim(t_sim *sim, int i);
 
 #endif

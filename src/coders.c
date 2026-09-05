@@ -87,3 +87,14 @@ void	*coder_routine(void *arg)
 	}
 	return (NULL);
 }
+
+long	coder_status(t_sim *sim, int i, int *done)
+{
+	long	time;
+
+	pthread_mutex_lock(&sim->coders_mutex);
+	*done = (sim->coders[i].compile_count >= sim->n_req_compiles);
+	time = get_time_ms() - sim->coders[i].last_compile;
+	pthread_mutex_unlock(&sim->coders_mutex);
+	return (time);
+}
