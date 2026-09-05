@@ -34,13 +34,10 @@ void	wake_all_waiters(t_sim *sim)
 
 static int	dongle_ready(t_dongle *dongle, t_waiter *waiter, long dongle_cd)
 {
-	if (dongle->in_use && get_time_ms() - dongle->released_at >= dongle_cd)
-		dongle->in_use = 0;
 	if (dongle->in_use)
-	{
-		pthread_mutex_unlock(&dongle->mutex);
 		return (0);
-	}
+	if (get_time_ms() - dongle->released_at < dongle_cd)
+		return (0);
 	return (heap_peek(dongle) == waiter);
 }
 void	acquire_dongle(t_coder *coder, t_dongle *dongle)
@@ -72,18 +69,9 @@ void	acquire_dongle(t_coder *coder, t_dongle *dongle)
 
 void	release_dongle(t_coder *coder, t_dongle *dongle)
 {
-	t_waiter	*next;
-
 	(void)coder;
 	pthread_mutex_lock(&dongle->mutex);
+	dongle->in_use = 0;
 	dongle->released_at = get_time_ms();
-	next = heap_pop(dongle);
-	if (next != NULL)
-	{
-		next->granted = 1;
-		pthread_cond_signal(&next->ready);
-	}
-	else
-		dongle->in_use = 0;
 	pthread_mutex_unlock(&dongle->mutex);
 }

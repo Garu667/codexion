@@ -15,7 +15,7 @@
 static int	has_priority(t_waiter *a, t_waiter *b, int scheduler)
 {
 	if (scheduler == SCHEDULER_FIFO)
-		return (a->arrived_at > b->arrived_at);
+		return (a->arrived_at < b->arrived_at);
 	if (a->deadline != b->deadline)
 		return (a->deadline < b->deadline);
 	return (a->arrived_at < b->arrived_at);
