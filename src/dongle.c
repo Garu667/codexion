@@ -32,41 +32,52 @@ void	wake_all_waiters(t_sim *sim)
 	}
 }
 
+static int	dongle_ready(t_dongle *dongle, t_waiter *waiter, long dongle_cd)
+{
+	if (dongle->in_use && get_time_ms() - dongle->released_at >= dongle_cd)
+		dongle->in_use = 0;
+	if (dongle->in_use)
+	{
+		pthread_mutex_unlock(&dongle->mutex);
+		return (0);
+	}
+	return (heap_peek(dongle) == waiter);
+}
 void	acquire_dongle(t_coder *coder, t_dongle *dongle)
 {
 	t_waiter	waiter;
-	long		remaining;
 
+	waiter.coder_id = coder->id;
+	waiter.arrived_at = get_time_ms();
+	waiter.deadline = coder->last_compile + coder->sim->time_burnout;
 	pthread_mutex_lock(&dongle->mutex);
-	if (dongle->in_use == 1 || dongle->queue_size > 0)
+	heap_push(dongle, &waiter, coder->sim->scheduler);
+	while (!dongle_ready(dongle, &waiter, coder->sim->dongle_cd)
+		&& !sim_should_stop(coder->sim))
 	{
-		waiter.coder_id = coder->id;
-		waiter.arrived_at = get_time_ms();
-		waiter.deadline = coder->last_compile + coder->sim->time_burnout;
-		waiter.granted = 0;
-		pthread_cond_init(&waiter.ready, NULL);
-		heap_push(dongle, &waiter, coder->sim->scheduler);
-		while (!waiter.granted && !sim_should_stop(coder->sim))
-			pthread_cond_wait(&waiter.ready, &dongle->mutex);
-		pthread_cond_destroy(&waiter.ready);
-		if (!waiter.granted)
-			return (pthread_mutex_unlock(&dongle->mutex), (void)0);
+		pthread_mutex_unlock(&dongle->mutex);
+		usleep(500);
+		pthread_mutex_lock(&dongle->mutex);
 	}
-	else
+	if (dongle_ready(dongle, &waiter, coder->sim->dongle_cd)
+		&& !sim_should_stop(coder->sim))
+	{
 		dongle->in_use = 1;
+		heap_pop(dongle);
+	}
+	else if (dongle->queue_size == 2)
+		dongle->queue_size--;
 	pthread_mutex_unlock(&dongle->mutex);
-	remaining = coder->sim->dongle_cd - (get_time_ms() - dongle->released_at);
-	if (remaining > 0)
-		ft_msleep(remaining, coder->sim);
 }
 
 void	release_dongle(t_coder *coder, t_dongle *dongle)
 {
 	t_waiter	*next;
 
+	(void)coder;
 	pthread_mutex_lock(&dongle->mutex);
 	dongle->released_at = get_time_ms();
-	next = heap_pop(dongle, coder->sim->scheduler);
+	next = heap_pop(dongle);
 	if (next != NULL)
 	{
 		next->granted = 1;
