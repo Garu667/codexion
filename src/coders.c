@@ -39,6 +39,8 @@ static void	coder_life(
 			t_dongle *second
 		)
 {
+	if (coder->compile_count == sim->n_req_compiles)
+		return ;
 	acquire_dongle(coder, first);
 	if (sim_should_stop(sim))
 		return ;

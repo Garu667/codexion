@@ -77,7 +77,7 @@ int	parsing(char **av, t_sim *sim)
 	sim->time_compile = parse_positive_long(av[3], 1);
 	sim->time_debug = parse_positive_long(av[4], 1);
 	sim->time_refactor = parse_positive_long(av[5], 1);
-	sim->n_req_compiles = (int)parse_positive_long(av[6], 1);
+	sim->n_req_compiles = (int)parse_positive_long(av[6], 0);
 	sim->dongle_cd = parse_positive_long(av[7], 0);
 	if (sim->n_coders < 0 || sim->time_burnout < 0
 		|| sim->time_compile < 0 || sim->time_debug < 0
